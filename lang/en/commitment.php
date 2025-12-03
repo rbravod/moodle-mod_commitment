@@ -22,6 +22,8 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+$string['cronfinalizeperiods'] = 'Finalize commitment periods';
+$string['cronsendreminders'] = 'Send commitment reminders';
 $string['daily'] = 'Daily';
 $string['description'] = 'Description';
 $string['endtime'] = 'End time';
@@ -30,10 +32,9 @@ $string['modulenameplural'] = 'Commitments';
 $string['name'] = 'Name';
 $string['once'] = 'Once';
 $string['periodicity'] = 'Periodicity';
+$string['pluginadministration'] = 'Commitment Contract administration';
 $string['pluginname'] = 'Commitment activity';
 $string['referee'] = 'Referee';
 $string['reportnow'] = 'Report now';
-$string['cronfinalizeperiods'] = 'Finalize commitment periods';
-$string['cronsendreminders'] = 'Send commitment reminders';
 $string['starttime'] = 'Start time';
 $string['weekly'] = 'Weekly';

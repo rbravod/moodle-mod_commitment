@@ -24,10 +24,20 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-function commitment_supports($feature) {
-    switch($feature) {
-        case FEATURE_MOD_INTRO: return true;
-        default: return null;
+/**
+ * Checks if certificate activity supports a specific feature.
+ *
+ * @param string $feature FEATURE_xx constant for requested feature
+ * @return mixed True if module supports feature, false if not, null if doesn't know
+ */
+function commitment_supports(string $feature) {
+    switch ($feature) {
+        case FEATURE_MOD_INTRO:
+            return true;
+        case FEATURE_MOD_PURPOSE:
+            return MOD_PURPOSE_ASSESSMENT;
+        default:
+            return null;
     }
 }
 
@@ -35,49 +45,33 @@ function commitment_supports($feature) {
  * Add commitment instance.
  *
  * @param stdClass $data
- * @param stdClass $mform
+ * @param mod_commitment_mod_form|null $mform
  * @return int The instance id of the new commitment
  */
-function commitment_add_instance($data, $mform) {
+function commitment_add_instance(stdClass $data, ?mod_commitment_mod_form $mform): int {
     global $DB;
-    $record = new stdClass();
-    $record->courseid = $data->course;
-    $record->userid = $data->userid;
-    $record->name = $data->name;
-    $record->description = $data->intro ?? '';
-    $record->starttime = isset($data->starttime) ? $data->starttime : 0;
-    $record->endtime = isset($data->endtime) ? $data->endtime : 0;
-    $record->periodicity = $data->periodicity ?? 'once';
-    $record->visibility = $data->visibility ?? 1;
-    $record->referee = $data->referee ?? 0;
-    $record->status = 'active';
-    $record->timecreated = time();
-    $record->timemodified = time();
 
-    $id = $DB->insert_record('commitment', $record);
-    return $id;
+    $data->timecreated = time();
+
+    $data->id = $DB->insert_record('commitment', $data);
+
+    return $data->id;
 }
 
 /**
  * Update commitment instance.
  *
  * @param stdClass $data
- * @param stdClass $mform
+ * @param mod_commitment_mod_form|null $mform
  * @return bool true
  */
-function commitment_update_instance($data, $mform) {
+function commitment_update_instance(stdClass $data, ?mod_commitment_mod_form $mform) {
     global $DB;
-    $record = $DB->get_record('commitment', ['id' => $data->instance]);
-    if (!$record) return false;
-    $record->name = $data->name;
-    $record->description = $data->intro ?? '';
-    $record->starttime = $data->starttime ?? 0;
-    $record->endtime = $data->endtime ?? 0;
-    $record->periodicity = $data->periodicity ?? 'once';
-    $record->visibility = $data->visibility ?? 1;
-    $record->referee = $data->referee ?? 0;
-    $record->timemodified = time();
-    return $DB->update_record('commitment', $record);
+
+    $data->timemodified = time();
+    $data->id = $data->instance;
+
+    return $DB->update_record('commitment', $data);
 }
 
 /**
@@ -86,9 +80,15 @@ function commitment_update_instance($data, $mform) {
  * @param int $id
  * @return bool success
  */
-function commitment_delete_instance($id) {
+function commitment_delete_instance(int $id): bool {
     global $DB;
+
+    if (!$DB->record_exists('commitment', ['id' => $id])) {
+        return false;
+    }
+
     $DB->delete_records('commitment', ['id' => $id]);
     // TODO: Delete related records (e.g., commitments, logs, etc.)
+
     return true;
 }
