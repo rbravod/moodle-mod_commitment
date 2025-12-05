@@ -25,27 +25,27 @@
 require_once('../../config.php');
 
 $id = required_param('id', PARAM_INT);
+$contractid = required_param('contractid', PARAM_INT);
 
 [$course, $cm] = get_course_and_cm_from_cmid($id, 'commitment');
 
-require_course_login($course, true, $cm);
+require_course_login($cm->course, true, $cm);
 $context = context_module::instance($cm->id);
 
 $commitment = $DB->get_record('commitment', ['id' => $cm->instance], '*', MUST_EXIST);
+$contract = $DB->get_record('commitment_contract', ['id' => $contractid, 'commitment' => $commitment->id], '*', MUST_EXIST);
 
-$PAGE->set_url('/mod/commitment/view.php', ['id' => $id]);
+$PAGE->set_url('/mod/commitment/contract.php', ['id' => $id, 'contractid' => $contractid]);
 $PAGE->set_title($PAGE->set_title($course->shortname . ': ' . $PAGE->activityrecord->name));
 $PAGE->set_heading(get_string('modulename', 'commitment'));
 
-$contracts = $DB->get_records('commitment_contract', ['commitment' => $commitment->id, 'userid' => $USER->id], 'timecreated DESC');
-
 $output = $PAGE->get_renderer('mod_commitment');
-$outputpage = new \mod_commitment\output\view_page($cm, $commitment, array_values($contracts));
+$outputpage = new \mod_commitment\output\contract_page($cm, $commitment, $contract);
 $data = $outputpage->export_for_template($output);
 
 $context = \context_module::instance($id);
 $PAGE->set_context($context);
 
 echo $output->header();
-echo $output->render_from_template('mod_commitment/view_page', $data);
+echo $output->render_from_template('mod_commitment/contract_page', $data);
 echo $output->footer();

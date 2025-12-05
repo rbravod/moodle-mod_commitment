@@ -22,14 +22,20 @@
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+
+$string['backtolist'] = 'Back to list';
+$string['contractcreated'] = 'Contract created';
+$string['createcontract'] = 'Create contract';
 $string['cronfinalizeperiods'] = 'Finalize commitment periods';
 $string['cronsendreminders'] = 'Send commitment reminders';
 $string['daily'] = 'Daily';
 $string['description'] = 'Description';
 $string['endtime'] = 'End time';
-$string['modulename'] = 'Commitment';
-$string['modulenameplural'] = 'Commitments';
+$string['modulename'] = 'Commitment Contract';
+$string['modulenameplural'] = 'Commitment Contracts';
+$string['mycontracts'] = 'My contracts';
 $string['name'] = 'Name';
+$string['nocontracts'] = 'You have not created any contracts yet.';
 $string['once'] = 'Once';
 $string['periodicity'] = 'Periodicity';
 $string['pluginadministration'] = 'Commitment Contract administration';
@@ -37,4 +43,6 @@ $string['pluginname'] = 'Commitment activity';
 $string['referee'] = 'Referee';
 $string['reportnow'] = 'Report now';
 $string['starttime'] = 'Start time';
+$string['title'] = 'Title';
+$string['visibility'] = 'Visibility';
 $string['weekly'] = 'Weekly';

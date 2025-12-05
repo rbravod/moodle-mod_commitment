@@ -1,0 +1,81 @@
+{{!
+    This file is part of Moodle - http://moodle.org/
+
+    Moodle is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Moodle is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
+}}
+{{!
+    @template mod_commitment/view_page
+
+    Commmitment Contract list.
+
+    Example context (json):
+    {
+        "cmid": "10",
+        "commitmentid": "5" ,
+        "createcontracturl": "/mod/commitment/new_contract.php?id=10",
+        "hascontracts": true,
+        "contracts": [
+            {
+                "id": 3,
+                "contracturl": "/mod/commitment/contract.php?id=10&contractid=3",
+                "title": "My first contract",
+                "shortdescription": "This is a short description of my first contract.",
+                "created": "2024-06-01 10:00",
+                "status": "active"
+            },
+            {
+                "id": 4,
+                "contracturl": "/mod/commitment/contract.php?id=10&contractid=4",
+                "title": "My second contract",
+                "shortdescription": "This is a short description of my second contract.",
+                "created": "2024-06-05 14:30",
+                "status": "completed"
+            }
+        ],
+    }
+}}
+<div class="mod-commitment-viewpage">
+    <div class="create-contract action">
+        <a class="btn btn-primary" href="{{ createcontracturl }}">
+            {{#str}} createcontract, mod_commitment {{/str}}
+        </a>
+    </div>
+
+    {{#hascontracts}}
+    <h4>{{#str}} mycontracts, mod_commitment {{/str}}
+    <div class="contracts-list">
+        <ul class="list-unstyled">
+            {{#contracts}}
+            <li class="contract-item media p-2 border mb-2">
+                <div class="media-body">
+                    <h4 class="mt-0 mb-1">
+                        <a href="{{ contracturl }}">{{{title}}}</a>
+                    </h4>
+                    <div class="small text-muted">Created: {{ created }} — Status: {{ status }}</div>
+                    <div class="mt-2">{{{ shortdescription }}}</div>
+                </div>
+            </li>
+            {{/contracts}}
+        </ul>
+    </div>
+    {{/hascontracts}}
+
+    {{^hascontracts}}
+    <div class="alert alert-info">
+      {{#str}} nocontracts, mod_commitment {{/str}}
+    </div>
+    {{/hascontracts}}
+</div>
+
+
