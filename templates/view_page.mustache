@@ -23,22 +23,21 @@
     {
         "cmid": "10",
         "commitmentid": "5" ,
-        "createcontracturl": "/mod/commitment/new_contract.php?id=10",
         "hascontracts": true,
         "contracts": [
             {
                 "id": 3,
                 "contracturl": "/mod/commitment/contract.php?id=10&contractid=3",
-                "title": "My first contract",
-                "shortdescription": "This is a short description of my first contract.",
+                "contractname": "My first contract",
+                "summary": "This is a short description of my first contract.",
                 "created": "2024-06-01 10:00",
                 "status": "active"
             },
             {
                 "id": 4,
                 "contracturl": "/mod/commitment/contract.php?id=10&contractid=4",
-                "title": "My second contract",
-                "shortdescription": "This is a short description of my second contract.",
+                "contractname": "My second contract",
+                "summary": "This is a short description of my second contract.",
                 "created": "2024-06-05 14:30",
                 "status": "completed"
             }
@@ -47,7 +46,7 @@
 }}
 <div class="mod-commitment-viewpage">
     <div class="create-contract action">
-        <a class="btn btn-primary" href="{{ createcontracturl }}">
+        <a class="btn btn-primary" href="/mod/commitment/contract_create.php?id={{cmid}}">
             {{#str}} createcontract, mod_commitment {{/str}}
         </a>
     </div>
@@ -60,10 +59,10 @@
             <li class="contract-item media p-2 border mb-2">
                 <div class="media-body">
                     <h4 class="mt-0 mb-1">
-                        <a href="{{ contracturl }}">{{{title}}}</a>
+                        <a href="{{ contracturl }}">{{ contractname }}</a>
                     </h4>
                     <div class="small text-muted">Created: {{ created }} — Status: {{ status }}</div>
-                    <div class="mt-2">{{{ shortdescription }}}</div>
+                    <div class="mt-2">{{{ summary }}}</div>
                 </div>
             </li>
             {{/contracts}}

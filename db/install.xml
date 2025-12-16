@@ -27,8 +27,8 @@
         <FIELD NAME="userid" TYPE="int" LENGTH="10" NOTNULL="true" /> <!-- owner (student) -->
         <FIELD NAME="title" TYPE="char" LENGTH="255" NOTNULL="true" />
         <FIELD NAME="description" TYPE="text" NOTNULL="false" />
-        <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="false" />
-        <FIELD NAME="endtime" TYPE="int" LENGTH="10" NOTNULL="false" />
+        <FIELD NAME="starttime" TYPE="int" LENGTH="10" NOTNULL="true" />
+        <FIELD NAME="endtime" TYPE="int" LENGTH="10" NOTNULL="true" />
         <FIELD NAME="periodicity" TYPE="char" LENGTH="20" NOTNULL="true" DEFAULT="once" /> <!-- once, daily, weekly, monthly -->
         <FIELD NAME="visibility" TYPE="int" LENGTH="2" NOTNULL="true" DEFAULT="1" />
         <FIELD NAME="referee" TYPE="int" LENGTH="10" NOTNULL="true" /> <!-- referee userid -->

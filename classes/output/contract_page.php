@@ -21,6 +21,8 @@ use renderable;
 use renderer_base;
 use moodle_url;
 use templatable;
+use mod_commitment\manager;
+use mod_commitment\external\contract_exporter;
 
 /**
  * Class contract_page
@@ -32,61 +34,32 @@ use templatable;
 class contract_page implements renderable, templatable {
     /** @var cm_info */
     protected $cm;
-    /** @var \stdClass commitment, module instance record */
+    /** @var \mod_commitment\persistent\commitment, module instance record */
     protected $commitment;
-    /** @var \stdClass */
+    /** @var \mod_commitment\persistent\contract */
     protected $contract;
 
     /**
      * Constructor.
      *
      * @param cm_info $cm
-     * @param \stdClass $commitment
-     * @param \stdClass $contract
+     * @param int $contractid
      */
-    public function __construct(cm_info $cm, \stdClass $commitment, \stdClass $contract) {
+    public function __construct(cm_info $cm, int $contractid) {
         $this->cm = $cm;
-        $this->commitment = $commitment;
-        $this->contract = $contract;
+
+        $manager = manager::instance();
+        $this->commitment = $manager->get_commitment($cm->instance);
+        $this->contract = $manager->get_contract($cm->instance, $contractid);
     }
 
-    /**
-     * Export data for mustache template.
-     *
-     * @param renderer_base $output
-     * @return array
-     */
-    public function export_for_template(renderer_base $output): array {
-        global $OUTPUT, $CFG;
-        require_once($CFG->dirroot . '/user/lib.php');
+    #[\Override]
+    public function export_for_template(renderer_base $output): \stdClass {
+        $exporter = new contract_exporter(
+            $this->contract->to_record(),
+            ['context' => $this->cm->context],
+        );
 
-        // Referee display.
-        $referee = '';
-        if (!empty($this->contract->referee)) {
-            $refereeuser = \core_user::get_user($this->contract->referee);
-            $course = get_course($this->cm->course);
-            $referee = $OUTPUT->user_picture($refereeuser, [
-                'includefullname' => true,
-                'link' => user_can_view_profile($refereeuser, $course),
-                'size' => 35,
-            ]);
-        }
-
-        return [
-            'cmid' => $this->cm->id,
-            'title' => format_string($this->contract->title),
-            'description' => format_text($this->contract->description
-                ?? '', $this->contract->descriptionformat ?? FORMAT_HTML, ['trusted' => false, 'overflowdiv' => true]),
-            'periodicity' => $this->contract->periodicity ?? 'once',
-            'status' => $this->contract->status ?? 'active',
-            'starttime' => !empty($this->contract->starttime) ? userdate($this->contract->starttime) : '',
-            'endtime' => !empty($this->contract->endtime) ? userdate($this->contract->endtime) : '',
-            'referee' => $referee,
-            'created' => userdate($this->contract->timecreated),
-            'reporturl' => (new moodle_url('/mod/commitment/report.php', [
-                'cmid' => $this->cm->id,
-                'contractid' => $this->contract->id,
-            ]))->out(false),
-        ];
+        return $exporter->export($output);
     }
 }

@@ -17,10 +17,12 @@
 namespace mod_commitment\output;
 
 use cm_info;
+use mod_commitment\external\commitment_with_contracts_exporter;
 use renderable;
 use renderer_base;
-use moodle_url;
 use templatable;
+use mod_commitment\manager;
+use mod_commitment\external\commitment_exporter;
 
 /**
  * Class view_page
@@ -32,54 +34,40 @@ use templatable;
 class view_page implements renderable, templatable {
     /** @var cm_info */
     protected $cm;
-    /** @var \stdClass commitment, module instance record */
+    /** @var \mod_commitment\persistent\commitment */
     protected $commitment;
-    /** @var array list of contract records (stdClass) */
-    protected $contracts;
+    /** @var array list of user contract records (\mod_commitment\persistent\contract[]) */
+    protected $usercontracts;
 
     /**
      * Constructor.
      *
      * @param cm_info $cm
-     * @param \stdClass $commitment
-     * @param array $contracts  Array of stdClass contract DB records
      */
-    public function __construct(cm_info $cm, \stdClass $commitment, array $contracts) {
+    public function __construct(cm_info $cm) {
         $this->cm = $cm;
+
+        $manager = manager::instance();
+        $commitment = $manager->get_commitment($cm->instance);
+        $usercontracts = $manager->get_user_contracts($commitment);
+
         $this->commitment = $commitment;
-        $this->contracts = $contracts;
+        $this->usercontracts = $usercontracts;
     }
 
-    /**
-     * Export data for mustache template.
-     *
-     * @param renderer_base $output
-     * @return array
-     */
-    public function export_for_template(renderer_base $output): array {
-        $contracts = [];
-        foreach ($this->contracts as $contract) {
-            // Build per-contract data for the template.
-            $contracts[] = [
-                'id' => (int)$contract->id,
-                'title' => format_string($contract->title),
-                'shortdescription' => format_text($contract->description ?? '', FORMAT_HTML, [
-                    'trusted' => false, 'overflowdiv' => true]),
-                'status' => (string)($contract->status ?? 'active'),
-                'created' => userdate($contract->timecreated),
-                'contracturl' => (new moodle_url('/mod/commitment/contract.php', [
-                    'id' => $this->cm->id,
-                    'contractid' => $contract->id,
-                ]))->out(false),
-            ];
-        }
+    #[\Override]
+    public function export_for_template(renderer_base $output): \stdClass {
+        // Persistent objects to stdClass records.
+        $usercontracts = array_map(fn($c) => $c->to_record(), $this->usercontracts);
+        $commitment = $this->commitment->to_record();
+        $exporter = new commitment_with_contracts_exporter(
+            $commitment,
+            [
+                'usercontracts' => $usercontracts,
+                'context' => $this->cm->context,
+            ],
+        );
 
-        return [
-            'cmid' => $this->cm->id,
-            'commitmentid' => $this->commitment->id,
-            'createcontracturl' => (new moodle_url('/mod/commitment/new_contract.php', ['id' => $this->cm->id]))->out(false),
-            'contracts' => $contracts,
-            'hascontracts' => !empty($contracts),
-        ];
+        return $exporter->export($output);
     }
 }

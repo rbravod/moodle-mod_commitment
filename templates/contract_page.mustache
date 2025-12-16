@@ -22,35 +22,34 @@
     Example context (json):
     {
         'cmid': 10,
-        'title': "My Commitment Contract",
-        'description': "<p>This is the description of my commitment contract.</p>",
+        'contractname': "My Commitment Contract",
+        'summary': "<p>This is the summary of my commitment contract.</p>",
         'periodicity': "weekly",
         'status': "active",
-        'starttime': '2024-06-01 10:00',
-        'endtime': '2024-12-01 10:00',
-        'referee': 'John Doe',
-        'created': '2024-06-01 09:00',
+        'start': '2024-06-01 10:00',
+        'end': '2024-12-01 10:00',
+        'refereedata': 'John Doe',
     }
 }}
 <div class="mod-commitment-contractpage">
-    <h2>{{title}}</h2>
-        <div class="contract-meta mb-2">
-            <span class="badge badge-secondary">Status: {{ status }}</span>
-            {{#starttime}} <span class="ml-2">Start: {{ starttime }}</span> {{/starttime}}
-            {{#endtime}} <span class="ml-2">End: {{ endtime }}</span> {{/endtime}}
-            {{#referee}} <span class="ml-2">Referee: {{{ referee }}}</span> {{/referee}}
-        </div>
+    <h2>{{contractname}}</h2>
+    <div class="contract-meta mb-2">
+        <span class="badge badge-secondary">Status: {{ status }}</span>
+        {{#start}} <span class="ml-2">Start: {{ start }}</span> {{/start}}
+        {{#end}} <span class="ml-2">End: {{ end }}</span> {{/end}}
+        {{#refereedata}} <span class="ml-2">Referee: {{{ refereedata }}}</span> {{/refereedata}}
+    </div>
 
-        <div class="contract-description mb-3">
-            {{{description}}}
-        </div>
+    <div class="contract-summary mb-3">
+        {{{summary}}}
+    </div>
 
-        <div class="contract-periods mb-3">
-            // TODO: list of PERIODS with a report button for each
-        </div>
+    <div class="contract-periods mb-3">
+        // TODO: list of PERIODS with a report button for each
+    </div>
 
-        <div class="contract-actions">
-            <a class="btn btn-primary" href="">{{#str}} reportnow, commitment {{/str}}</a>
-            <a class="btn btn-secondary ml-2" href="/mod/commitment/view.php?id={{ cmid }}">{{#str}} backtolist, commitment {{/str}}</a>
-        </div>
+    <div class="contract-actions">
+        <a class="btn btn-primary" href="">{{#str}} reportnow, commitment {{/str}}</a>
+        <a class="btn btn-secondary ml-2" href="/mod/commitment/view.php?id={{ cmid }}">{{#str}} backtolist, commitment {{/str}}</a>
+    </div>
 </div>

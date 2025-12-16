@@ -31,16 +31,13 @@ $id = required_param('id', PARAM_INT);
 require_course_login($course, true, $cm);
 $context = context_module::instance($cm->id);
 
-$commitment = $DB->get_record('commitment', ['id' => $cm->instance], '*', MUST_EXIST);
-
 $PAGE->set_url('/mod/commitment/view.php', ['id' => $id]);
 $PAGE->set_title($PAGE->set_title($course->shortname . ': ' . $PAGE->activityrecord->name));
 $PAGE->set_heading(get_string('modulename', 'commitment'));
 
-$contracts = $DB->get_records('commitment_contract', ['commitment' => $commitment->id, 'userid' => $USER->id], 'timecreated DESC');
-
+/** @var core_renderer $output */
 $output = $PAGE->get_renderer('mod_commitment');
-$outputpage = new \mod_commitment\output\view_page($cm, $commitment, array_values($contracts));
+$outputpage = new \mod_commitment\output\view_page($cm);
 $data = $outputpage->export_for_template($output);
 
 $context = \context_module::instance($id);
